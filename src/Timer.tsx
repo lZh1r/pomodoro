@@ -7,15 +7,16 @@ export default function Timer() {
     const shortBreakTime = 300;
     const longBreakTime = 600;
 
+    const modes = ["Pomodoro", "Short Break", "Long Break"];
+    const modeTimes = [1500, 300, 600];
+    const [isSelected, setIsSelected] = useState([true, false, false]);
+
     const [timeChange, setTimeChange] = useState(0);
     const [time, setTime] = useState(workTime);
     const [buttonText, setButtonText] = useState('Start');
     const [currentCycle, setCurrentCycle] = useState("Work");
     const [nextCycle, setNextCycle] = useState("Short Break");
     const [streak, setStreak] = useState(0);
-    const [is1Bold, setIs1Bold] = useState(true);
-    const [is2Bold, setIs2Bold] = useState(false);
-    const [is3Bold, setIs3Bold] = useState(false);
     const [shadowRadius, setShadowRadius] = useState('0');
     const [textScale, setTextScale] = useState('1');
 
@@ -36,7 +37,7 @@ export default function Timer() {
 
                     if (streak === 3) {
                         setStreak(0);
-                        setCurrentCycle("Long Break")
+                        setCurrentCycle("Long Break");
                         setTime(longBreakTime);
                     }
                     else {
@@ -89,41 +90,31 @@ export default function Timer() {
         setTextScale(newTextScale);
     }
 
+    function constructNewArray(index:number) {
+        const newArray = [false, false, false];
+        newArray[index] = true;
+        return newArray;
+    }
+
     return (
         <div className="text-center font-primary h-screen flex flex-col justify-center bg-bg">
             <div className="mb-10">
-                <ModeButton text="Pomodoro" isActive={is1Bold} callback={function (): void {
-                    //kill me on the spot
-                    setTimeChange(0);
-                    setCurrentCycle("Work");
-                    setButtonText("Start");
-                    setTime(workTime);
-                    setIs1Bold(true);
-                    setIs2Bold(false);
-                    setIs3Bold(false);
-                }}/>
-                <ModeButton text="Short Break" isActive={is2Bold} callback={function (): void {
-                    setTimeChange(0);
-                    setCurrentCycle("Short Break");
-                    setButtonText("Start");
-                    setTime(shortBreakTime);
-                    setIs1Bold(false);
-                    setIs2Bold(true);
-                    setIs3Bold(false);
-                }}/>
-                <ModeButton text="Long Break" isActive={is3Bold} callback={function (): void {
-                    setTimeChange(0);
-                    setCurrentCycle("Long Break");
-                    setButtonText("Start");
-                    setTime(longBreakTime);
-                    setIs1Bold(false);
-                    setIs2Bold(false);
-                    setIs3Bold(true);
-                }}/>
+
+                {modes.map((modeName, index) => (
+                    <ModeButton key={index} text={modeName} isActive={isSelected[index]} callback={() => {
+                        setTimeChange(0);
+                        setCurrentCycle(() => index === 0 ? "Work" : modes[index]);
+                        setIsSelected(constructNewArray(index));
+                        setTime(modeTimes[index]);
+                        setButtonText("Start");
+                        setShadowRadius("0");
+                        setTextScale("1");
+                    }}/>
+                ))}
             </div>
             <div>
                 <h1 style={{textShadow: `0 0 ${shadowRadius}px white`, scale: textScale}} className="
-                place-self-center w-2xs text-5xl font-medium text-white transition-all">{currentCycle}</h1>
+                place-self-center w-xs text-5xl font-medium text-white transition-all">{currentCycle}</h1>
                 <h1 className="place-self-center m-10 p-3 w-2xs rounded-4xl text-5xl font-bold bg-white text-bg">{formatTime(time)}</h1>
                 <button className="text-4xl font-medium cursor-pointer outline-2 outline-solid outline-white rounded-md
                  p-3 text-white hover:scale-105 transition-all" onClick={handlePause}>{buttonText}</button>
