@@ -3,10 +3,6 @@
 
 @theme {
     --font-primary: "Montserrat", "sans-serif";
-    /*--color-bg-dark: #10002b;*/
-    /*--color-bg: #240046;*/
-    /*--color-bg-light: #3C096C;*/
-    /*--color-main-light: #E0AAFF;*/
     --color-bg: #a2bac8;
     --color-main: #4b7c97;
 }
