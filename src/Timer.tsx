@@ -1,4 +1,4 @@
-import {useEffect, useReducer, useState} from "react";
+import {useCallback, useEffect, useReducer, useState} from "react";
 import ModeButton from "./ModeButton.tsx";
 
 const modes = ["Pomodoro", "Short Break", "Long Break"];
@@ -97,13 +97,12 @@ export default function Timer() {
 
     const [state, dispatch] = useReducer(reducer, defaultState);
     const [isSelected, setIsSelected] = useState([true, false, false]);
-
-    function formatTime(num:number) {
+    const formatTime = useCallback((num:number) => {
         const minutes = Math.floor(num / 60);
         const seconds = num % 60;
 
         return `${padZero(minutes)}:${padZero(seconds)}`;
-    }
+    }, []);
 
     function padZero(num:number) {
         return num < 10 ? `0${num}` : num.toString()
@@ -111,7 +110,6 @@ export default function Timer() {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            // setTime(t => t - state.timeChange);
 
             document.title = `${formatTime(state.time)} ${state.currentCycle}`;
 
@@ -123,7 +121,7 @@ export default function Timer() {
 
         }, 1000);
         return () => {clearInterval(interval)}
-    }, [state.time, state.currentCycle])
+    }, [state.time, state.currentCycle, formatTime])
 
     function constructNewArray(index:number) {
         const newArray = [false, false, false];
@@ -132,7 +130,7 @@ export default function Timer() {
     }
 
     return (
-        <div className="text-center font-primary h-screen flex flex-col justify-center bg-bg">
+        <div className="text-center font-primary h-screen flex flex-col justify-start sm:justify-center bg-bg">
             <div className="mb-10">
                 {modes.map((modeName, index) => (
                     <ModeButton key={index} text={modeName} isActive={isSelected[index]} callback={() => {
