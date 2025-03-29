@@ -28,12 +28,20 @@ enum actions {
     CYCLE = 'cycle'
 }
 
-function reducer(state:timerState, action) {
-    const index:number = action.payload;
+interface PomAction {
+    type : actions,
+    payload? : number
+}
 
-    switch (action.type) {
+function reducer(state:timerState, action:PomAction):timerState {
+    const {type, payload} = action;
+
+    const index = payload ?? 0;
+
+    switch (type) {
         case actions.SWITCH : {
            return {
+               ...state,
                time: modeTimes[index],
                timeChange: 0,
                buttonText: "Start",
@@ -85,7 +93,7 @@ function reducer(state:timerState, action) {
 
 export default function Timer() {
 
-    const defaultState = {time: cycles.WORK.time, timeChange: 0, buttonText: "Start", currentCycle: cycles.WORK.name, streak: 0, shadowRadius: 0, textScale: 1}
+    const defaultState = {time: cycles.WORK.time, timeChange: 0, buttonText: "Start", currentCycle: cycles.WORK.name, streak: 0, shadowRadius: 0, textScale: 1, selected: [true, false, false]}
 
     const [state, dispatch] = useReducer(reducer, defaultState);
     const [isSelected, setIsSelected] = useState([true, false, false]);
