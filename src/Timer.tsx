@@ -1,26 +1,6 @@
 import {useCallback, useEffect, useReducer, useState} from "react";
 import ModeButton from "./ModeButton.tsx";
 
-const modes = ["Pomodoro", "Short Break", "Long Break"];
-const modeTimes = [1500, 300, 600];
-
-const cycles = {
-    WORK : {name: 'Work', time: 1500},
-    SHORT_BREAK : {name: 'Short Break', time: 300},
-    LONG_BREAK : {name: 'Long Break', time: 600}
-}
-
-interface timerState {
-    time : number;
-    timeChange : number;
-    buttonText : string;
-    currentCycle : string;
-    streak : number;
-    shadowRadius : number;
-    textScale : number;
-    selected : boolean[];
-}
-
 enum actions {
     SWITCH = 'switch_mode',
     PAUSE = 'pause',
@@ -28,70 +8,90 @@ enum actions {
     CYCLE = 'cycle'
 }
 
-interface PomAction {
-    type : actions,
-    payload? : number
-}
+export default function Timer({times}:{times:number[]}) {
 
-function reducer(state:timerState, action:PomAction):timerState {
-    const {type, payload} = action;
+    const modes = ["Pomodoro", "Short Break", "Long Break"];
+    const modeTimes = times;
 
-    const index = payload ?? 0;
+    const cycles = {
+        WORK : {name: 'Work', time: modeTimes[0]},
+        SHORT_BREAK : {name: 'Short Break', time: modeTimes[1]},
+        LONG_BREAK : {name: 'Long Break', time: modeTimes[2]}
+    }
 
-    switch (type) {
-        case actions.SWITCH : {
-           return {
-               ...state,
-               time: modeTimes[index],
-               timeChange: 0,
-               buttonText: "Start",
-               currentCycle: index === 0 ? cycles.WORK.name : modes[index],
-               streak: 0,
-               shadowRadius: 0,
-               textScale: 1
-           }
-        }
-        case actions.PAUSE : {
-            if (state.timeChange === 0) {
+    interface timerState {
+        time : number;
+        timeChange : number;
+        buttonText : string;
+        currentCycle : string;
+        streak : number;
+        shadowRadius : number;
+        textScale : number;
+        selected : boolean[];
+    }
+
+    interface PomAction {
+        type : actions,
+        payload? : number
+    }
+
+    function reducer(state:timerState, action:PomAction):timerState {
+        const {type, payload} = action;
+
+        const index = payload ?? 0;
+
+        switch (type) {
+            case actions.SWITCH : {
                 return {
                     ...state,
-                    timeChange: 1,
-                    buttonText: "Pause",
-                    shadowRadius: 10,
-                    textScale: 1.1
-                }
-            }
-            else {
-                return {
-                    ...state,
+                    time: modeTimes[index],
                     timeChange: 0,
                     buttonText: "Start",
+                    currentCycle: index === 0 ? cycles.WORK.name : modes[index],
+                    streak: 0,
                     shadowRadius: 0,
                     textScale: 1
                 }
             }
-        }
-        case actions.UPDATE : {
-            return {
-                ...state,
-                time: state.time - state.timeChange
+            case actions.PAUSE : {
+                if (state.timeChange === 0) {
+                    return {
+                        ...state,
+                        timeChange: 1,
+                        buttonText: "Pause",
+                        shadowRadius: 10,
+                        textScale: 1.1
+                    }
+                }
+                else {
+                    return {
+                        ...state,
+                        timeChange: 0,
+                        buttonText: "Start",
+                        shadowRadius: 0,
+                        textScale: 1
+                    }
+                }
             }
-        }
-        case actions.CYCLE : {
-            console.log(state.streak + 1, state.currentCycle);
-            return {
-                ...state,
-                streak: state.streak === 6 ? -1 : state.streak + 1,
-                currentCycle: state.currentCycle === cycles.WORK.name ? (state.streak === 6 ? cycles.LONG_BREAK.name : cycles.SHORT_BREAK.name) : cycles.WORK.name,
-                time: state.currentCycle === cycles.WORK.name ? (state.streak === 6 ? cycles.LONG_BREAK.time : cycles.SHORT_BREAK.time) : cycles.WORK.time,
+            case actions.UPDATE : {
+                return {
+                    ...state,
+                    time: state.time - state.timeChange
+                }
             }
+            case actions.CYCLE : {
+                console.log(state.streak + 1, state.currentCycle);
+                return {
+                    ...state,
+                    streak: state.streak === 6 ? -1 : state.streak + 1,
+                    currentCycle: state.currentCycle === cycles.WORK.name ? (state.streak === 6 ? cycles.LONG_BREAK.name : cycles.SHORT_BREAK.name) : cycles.WORK.name,
+                    time: state.currentCycle === cycles.WORK.name ? (state.streak === 6 ? cycles.LONG_BREAK.time : cycles.SHORT_BREAK.time) : cycles.WORK.time,
+                }
+            }
+            default : throw new Error("Unknown action!")
         }
-        default : throw new Error("Unknown action!")
+
     }
-
-}
-
-export default function Timer() {
 
     const defaultState = {time: cycles.WORK.time, timeChange: 0, buttonText: "Start", currentCycle: cycles.WORK.name, streak: 0, shadowRadius: 0, textScale: 1, selected: [true, false, false]}
 
