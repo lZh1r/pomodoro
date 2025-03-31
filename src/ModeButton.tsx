@@ -7,14 +7,7 @@ export default function ModeButton({text, isActive, callback}: {text: string, is
     const [weight, setWeight] = useState("normal");
 
     useEffect(() => {
-        let newWeight;
-        if (isActive) {
-            newWeight = "bold";
-        }
-        else {
-            newWeight = "normal";
-        }
-        setWeight(newWeight);
+        setWeight(isActive ? "bold" : "normal");
     }, [isActive]);
 
     return (

@@ -105,7 +105,7 @@ export default function Timer() {
     }, []);
 
     function padZero(num:number) {
-        return num < 10 ? `0${num}` : num.toString()
+        return num < 10 ? `0${num}` : num.toString();
     }
 
     useEffect(() => {
@@ -130,7 +130,7 @@ export default function Timer() {
     }
 
     return (
-        <div className="text-center font-primary h-screen flex flex-col justify-start sm:justify-center bg-bg">
+        <div className="">
             <div className="mb-10">
                 {modes.map((modeName, index) => (
                     <ModeButton key={index} text={modeName} isActive={isSelected[index]} callback={() => {
