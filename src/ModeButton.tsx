@@ -13,7 +13,7 @@ export default function ModeButton({text, isActive, callback}: {text: string, is
     return (
         <button style={{fontWeight: weight}} onClick={() => {
             callback();
-        }} className="text-2xl w-5xs m-4 sm:m-7 bg-bg outline-2 outline-solid outline-white text-white rounded-4xl p-3 cursor-pointer
+        }} className="text-2xl w-5xs m-4 sm:m-7 outline-2 outline-solid rounded-4xl p-3 cursor-pointer
         hover:scale-105 transition-all">
             {text}
         </button>
