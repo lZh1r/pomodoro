@@ -131,7 +131,7 @@ export default function Timer({times, bgColor, textColor}:{times:number[], bgCol
 
     return (
         <div>
-            <div className="mb-10">
+            <div className="md:mb-10 mb-3 max-lg:flex max-lg:flex-col max-lg:place-self-center">
                 {modes.map((modeName, index) => (
                     <ModeButton key={index} text={modeName} isActive={isSelected[index]} callback={() => {
                         dispatch({type: actions.SWITCH, payload: index});
@@ -141,10 +141,10 @@ export default function Timer({times, bgColor, textColor}:{times:number[], bgCol
             </div>
             <div>
                 <h1 style={{textShadow: `0 0 ${state.shadowRadius}px ${textColor}`, scale: state.textScale}} className="
-                place-self-center w-xs text-5xl font-medium transition-all">{state.currentCycle}</h1>
+                place-self-center w-xs md:text-5xl xl:text-6xl text-4xl font-medium transition-all">{state.currentCycle}</h1>
                 <h1 style={{backgroundColor:textColor, color:bgColor, outlineColor:bgColor}}
-                    className="place-self-center m-10 p-3 w-2xs rounded-4xl text-5xl font-bold">{formatTime(state.time)}</h1>
-                <button className="text-4xl font-medium cursor-pointer outline-2 outline-solid rounded-md
+                    className="place-self-center md:m-10 m-5 p-3 w-2xs rounded-4xl md:text-5xl xl:text-6xl text-4xl font-bold">{formatTime(state.time)}</h1>
+                <button className="md:text-4xl xl:text-5xl text-3xl font-medium cursor-pointer outline-2 outline-solid rounded-md
                  p-3 hover:scale-105 transition-all" onClick={() => dispatch({type: actions.PAUSE})}>{state.buttonText}</button>
             </div>
         </div>
